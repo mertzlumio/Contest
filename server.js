@@ -47,7 +47,25 @@ const vertices = [
   { x: 100, y: 200 },
 ];
 
+const vertices2 = [
+  { x: 100, y: 100 },
+  { x: 75, y: 125 },
+  { x: 50, y: 150 },
+  { x: 50, y: 175 },
+  { x: 75, y: 200 },
+  { x: 100, y: 225 },
+  { x: 80, y: 200 },
+  { x: 60, y: 175 },
+  { x: 60, y: 150 },
+  { x: 80, y: 125 },
+  { x: 100, y: 100 },
+];
+
 const polygon = Matter.Bodies.fromVertices(100, 300, vertices);
+
+const polygon2 = Matter.Bodies.fromVertices(700, 300, vertices2, {
+  isStatic: true,
+});
 
 const wallOptions = {
   isStatic: true,
@@ -59,7 +77,15 @@ const wall2 = Matter.Bodies.rectangle(1000, 350, 200, 700, wallOptions);
 
 engine.gravity.y = 0;
 
-Matter.World.add(engine.world, [bat1, bat2, ball, wall1, wall2, polygon]);
+Matter.World.add(engine.world, [
+  bat1,
+  bat2,
+  ball,
+  wall1,
+  wall2,
+  polygon,
+  polygon2,
+]);
 
 Matter.Runner.run(engine);
 
@@ -83,23 +109,36 @@ io.on("connection", (socket) => {
       Matter.Body.setVelocity(bat2, { x: velocityX, y: velocityY });
     }
   });
+  let player1Score = 0;
+  let player2Score = 0;
+  function reset() {
+    Matter.Body.setPosition(bat1, { x: 450, y: 50 });
+    Matter.Body.setAngle(bat1, 0);
+    Matter.Body.setPosition(bat2, { x: 450, y: 650 });
+    Matter.Body.setAngle(bat2, 0);
+    Matter.Body.setPosition(ball, { x: 450, y: 350 });
+    Matter.Body.setVelocity(ball, {
+      x: Math.random() * 10 - 5,
+      y: Math.random() * 4 - 2,
+    });
+    io.emit("playerScore", player1Score, player2Score);
+  }
 
   setInterval(() => {
     Matter.Engine.update(engine);
-    if (ball.position.y > 720 || ball.position.y < -20) {
-      Matter.Body.setPosition(bat1, { x: 450, y: 50 });
-      Matter.Body.setAngle(bat1, 0);
-      Matter.Body.setPosition(bat2, { x: 450, y: 650 });
-      Matter.Body.setAngle(bat2, 0);
-      Matter.Body.setPosition(ball, { x: 450, y: 350 });
-      Matter.Body.setVelocity(ball, {
-        x: Math.random() * 10 - 5,
-        y: Math.random() * 4 - 2,
-      });
+    if (ball.position.y > 700) {
+      player1Score = player1Score + 1;
+      reset();
     }
-    const bodies = [bat1, bat2, ball, wall1, wall2, polygon].map((body) => ({
-      vertices: body.vertices.map((vertex) => ({ x: vertex.x, y: vertex.y })),
-    }));
+    if (ball.position.y < 0) {
+      player2Score = player2Score + 1;
+      reset();
+    }
+    const bodies = [bat1, bat2, ball, wall1, wall2, polygon, polygon2].map(
+      (body) => ({
+        vertices: body.vertices.map((vertex) => ({ x: vertex.x, y: vertex.y })),
+      })
+    );
     socket.emit("matterState", bodies);
   }, 16);
 

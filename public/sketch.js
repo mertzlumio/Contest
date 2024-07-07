@@ -1,5 +1,7 @@
 let matterBodies = [];
 let playerId;
+let p1Score;
+let p2Score;
 
 function setup() {
   var canvas = createCanvas(900, 700);
@@ -19,6 +21,12 @@ function setup() {
   canvas.mouseMoved(() => {
     socket.emit("mouseInput", { x: mouseX, y: mouseY, Id: playerId });
   });
+
+  socket.on("playerScore", (player1Score, player2Score) => {
+    console.log(player1Score);
+    p1Score = player1Score;
+    p2Score = player2Score;
+  });
 }
 
 function draw() {
@@ -30,6 +38,11 @@ function draw() {
   }
 
   matterBodies.forEach(drawBody);
+
+  fill(255);
+  textSize(24);
+  text(`Player 1: ${p1Score}`, 10, 30);
+  text(`Player 2: ${p2Score}`, 10, 60);
 }
 
 function drawBody(body) {
