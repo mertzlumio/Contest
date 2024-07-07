@@ -37,7 +37,7 @@ const ballOptions = {
 const ball = Matter.Bodies.circle(450, 350, 10, ballOptions);
 Matter.Body.setVelocity(ball, {
   x: Math.random() * 10 - 5,
-  y: Math.random() * 10 - 5,
+  y: Math.random() * 4 - 2,
 });
 
 const vertices = [
@@ -54,8 +54,8 @@ const wallOptions = {
   restitution: 1,
 };
 
-const wall1 = Matter.Bodies.rectangle(-100, 300, 200, 700, wallOptions);
-const wall2 = Matter.Bodies.rectangle(1000, 300, 200, 700, wallOptions);
+const wall1 = Matter.Bodies.rectangle(-100, 350, 200, 700, wallOptions);
+const wall2 = Matter.Bodies.rectangle(1000, 350, 200, 700, wallOptions);
 
 engine.gravity.y = 0;
 
@@ -71,14 +71,16 @@ io.on("connection", (socket) => {
   socket.emit("player id", playerCount);
 
   socket.on("mouseInput", (data) => {
+    let velocityX;
+    let velocityY;
     if (data.Id % 2 == 0) {
-      const velocityX1 = (900 - data.x - bat1.position.x) * 0.1;
-      const velocityY1 = (700 - data.y - bat1.position.y) * 0.1;
-      Matter.Body.setVelocity(bat1, { x: velocityX1, y: velocityY1 });
+      velocityX = (900 - data.x - bat1.position.x) * 0.1;
+      velocityY = (700 - data.y - bat1.position.y) * 0.1;
+      Matter.Body.setVelocity(bat1, { x: velocityX, y: velocityY });
     } else {
-      const velocityX1 = (data.x - bat2.position.x) * 0.1;
-      const velocityY1 = (data.y - bat2.position.y) * 0.1;
-      Matter.Body.setVelocity(bat2, { x: velocityX1, y: velocityY1 });
+      velocityX = (data.x - bat2.position.x) * 0.1;
+      velocityY = (data.y - bat2.position.y) * 0.1;
+      Matter.Body.setVelocity(bat2, { x: velocityX, y: velocityY });
     }
   });
 
@@ -92,7 +94,7 @@ io.on("connection", (socket) => {
       Matter.Body.setPosition(ball, { x: 450, y: 350 });
       Matter.Body.setVelocity(ball, {
         x: Math.random() * 10 - 5,
-        y: Math.random() * 10 - 5,
+        y: Math.random() * 4 - 2,
       });
     }
     const bodies = [bat1, bat2, ball, wall1, wall2, polygon].map((body) => ({
