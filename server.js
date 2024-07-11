@@ -70,6 +70,8 @@ const polygon2 = Matter.Bodies.fromVertices(700, 350, vertices2, {
   isStatic: true,
 });
 
+Matter.Body.rotate(polygon, Math.PI);
+
 const polygon3 = Matter.Bodies.circle(200, 550, 30);
 
 const wallOptions = {
