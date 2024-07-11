@@ -39,10 +39,8 @@ function draw() {
 
   matterBodies.forEach(drawBody);
 
-  fill(255);
-  textSize(24);
-  text(`Player 1: ${p1Score}`, 10, 30);
-  text(`Player 2: ${p2Score}`, 10, 60);
+  document.getElementById("player1").textContent = `Player 1: ${p2Score}`;
+  document.getElementById("player2").textContent = `Player 2: ${p1Score}`;
 }
 
 function drawBody(body) {

@@ -61,11 +61,16 @@ const vertices2 = [
   { x: 100, y: 100 },
 ];
 
-const polygon = Matter.Bodies.fromVertices(100, 300, vertices);
+const polygon = Matter.Bodies.fromVertices(200, 350, vertices2, {
+  isStatic: true,
+  flipX: true,
+});
 
-const polygon2 = Matter.Bodies.fromVertices(700, 300, vertices2, {
+const polygon2 = Matter.Bodies.fromVertices(700, 350, vertices2, {
   isStatic: true,
 });
+
+const polygon3 = Matter.Bodies.circle(200, 550, 30);
 
 const wallOptions = {
   isStatic: true,
@@ -85,6 +90,7 @@ Matter.World.add(engine.world, [
   wall2,
   polygon,
   polygon2,
+  polygon3,
 ]);
 
 Matter.Runner.run(engine);
@@ -126,19 +132,26 @@ io.on("connection", (socket) => {
 
   setInterval(() => {
     Matter.Engine.update(engine);
-    if (ball.position.y > 700) {
+    if (ball.position.y > 700 || bat2.position.y < 350) {
       player1Score = player1Score + 1;
       reset();
     }
-    if (ball.position.y < 0) {
+    if (ball.position.y < 0 || bat1.position.y > 350) {
       player2Score = player2Score + 1;
       reset();
     }
-    const bodies = [bat1, bat2, ball, wall1, wall2, polygon, polygon2].map(
-      (body) => ({
-        vertices: body.vertices.map((vertex) => ({ x: vertex.x, y: vertex.y })),
-      })
-    );
+    const bodies = [
+      bat1,
+      bat2,
+      ball,
+      wall1,
+      wall2,
+      polygon,
+      polygon2,
+      polygon3,
+    ].map((body) => ({
+      vertices: body.vertices.map((vertex) => ({ x: vertex.x, y: vertex.y })),
+    }));
     socket.emit("matterState", bodies);
   }, 16);
 
