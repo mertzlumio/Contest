@@ -36,7 +36,7 @@ const ballOptions = {
 
 const ball = Matter.Bodies.circle(450, 350, 10, ballOptions);
 Matter.Body.setVelocity(ball, {
-  x: Math.random() * 10 - 5,
+  x: Math.random() * 6 - 3,
   y: Math.random() * 4 - 2,
 });
 
@@ -98,6 +98,8 @@ Matter.World.add(engine.world, [
 Matter.Runner.run(engine);
 
 let playerCount = 0;
+let player1Score = 0;
+let player2Score = 0;
 
 io.on("connection", (socket) => {
   playerCount += 1;
@@ -117,8 +119,7 @@ io.on("connection", (socket) => {
       Matter.Body.setVelocity(bat2, { x: velocityX, y: velocityY });
     }
   });
-  let player1Score = 0;
-  let player2Score = 0;
+
   function reset() {
     Matter.Body.setPosition(bat1, { x: 450, y: 50 });
     Matter.Body.setAngle(bat1, 0);
@@ -126,7 +127,7 @@ io.on("connection", (socket) => {
     Matter.Body.setAngle(bat2, 0);
     Matter.Body.setPosition(ball, { x: 450, y: 350 });
     Matter.Body.setVelocity(ball, {
-      x: Math.random() * 10 - 5,
+      x: Math.random() * 6 - 3,
       y: Math.random() * 4 - 2,
     });
     io.emit("playerScore", player1Score, player2Score);
