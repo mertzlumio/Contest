@@ -126,9 +126,13 @@ io.on("connection", (socket) => {
     Matter.Body.setPosition(bat2, { x: 450, y: 650 });
     Matter.Body.setAngle(bat2, 0);
     Matter.Body.setPosition(ball, { x: 450, y: 350 });
+	
+	var Velocity = Math.random() * 6 - 3;
+	if(Velocity < 1 && Velocity > -1)
+			Velocity = 4;
     Matter.Body.setVelocity(ball, {
       x: Math.random() * 6 - 3,
-      y: Math.random() * 4 - 2,
+      y: Velocity,
     });
     io.emit("playerScore", player1Score, player2Score);
   }
@@ -162,6 +166,6 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
-server.listen(3000, () => {
-  console.log("Listening on port 3000");
+server.listen(3500, () => {
+  console.log("Listening on port 3500");
 });
